@@ -6,6 +6,7 @@ dotenv.config({ path: './.env' });
 export const {
     PORT,
     MONGO_URL,
+    MONGO_DATABASE,
     MONGO_WHITERSUN_PASSWORD,
 } = process.env;
 
