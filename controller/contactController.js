@@ -1,8 +1,10 @@
 import User from "../models/contactModel.js";
 import expressAsyncHandler from "express-async-handler";
 import { hashPassword } from "../utils/password.js";
+import profileModel from "../models/profile.js";
 
 const getContacts  = expressAsyncHandler(async (req, res, next) => {
+    console.log('hello world')
     const user = await User.find({});
     console.log(user)
     if (user.length === 0) {
@@ -24,15 +26,55 @@ const createContact = expressAsyncHandler (async (req,res) => {
             res.status(400);
             throw new Error("Error create!");
         }
+
+        const newProfile = new profileModel({
+            fullname, 
+            avatar: '',
+            email,
+            address: '', 
+            phone,
+            products: {
+                cart: [],
+                vouchers: [],
+            }
+        });
+
+        await newProfile.save();
+
         const hashPass = await hashPassword(password);
         console.log('hashPassword: ', hashPass);
 
-        const user = await User.create({ fullname, password: hashPass, email, phone });
-        console.log('new user: ', user);
-        res.status(202).json(user);
+        console.log(3);
+
+        const user = await User.create({ 
+            fullname, 
+            password: hashPass, 
+            email, 
+            phone,
+            profile: newProfile._id,
+        });
+
+        await user.save();
+
+        const formattedUser = await User.findOne({ _id: user._id })
+            .populate('profile')
+            .select('-password')
+            .lean();
+        
+        const UserId = formattedUser.profile._id;
+        delete formattedUser.profile._id;
+        console.log('formattedUser: ', formattedUser);
+
+        return res.status(202)
+            .json({ id: UserId, ...formattedUser.profile });
+
     } catch (error) {
-        res.status(400);
-        throw new Error(error.message);
+        // throw new Error(error.message);
+        console.log(error.message);
+        return res.status(400).json({
+            status: 'fail',
+            message: error.message.replace(/\"/g, "")
+        });
     }
 });
 

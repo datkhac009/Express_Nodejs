@@ -18,7 +18,11 @@
     "express-async-handler": "^1.2.0",
     "mongoose": "^7.4.0",
     "nodemon": "^3.0.1",
+    "uuid": "^9.0.0",
     "winston": "^3.10.0"
   },
-  "type": "module"
+  "type": "module",
+  "devDependencies": {
+    "@types/express": "^4.17.17"
+  }
 }

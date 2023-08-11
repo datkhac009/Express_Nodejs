@@ -1,11 +1,11 @@
 import User from '../models/contactModel.js';
 import mongoose from "mongoose";
 import logger from "../utils/logger.js"
-import { MONGO_URL } from "../utils/secrets.js";
+import { MONGO_DATABASE, MONGO_URL } from "../utils/secrets.js";
 
 const mongoConnection = () => {
     return new Promise(async (resolve, reject) => {
-        const url = MONGO_URL;
+        const url = `${MONGO_URL}/${MONGO_DATABASE}`;
 
         try {
             await mongoose.connect(url, {
