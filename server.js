@@ -8,6 +8,8 @@ import dotEnv from 'dotenv';
 
 import routerContact from './router/contact.js';
 import routerProduct from './router/products.js';
+import routerCart from './router/cart.js';
+
 import errorHandler from './middleware/errorHandler.js';
 
 dotEnv.config({ path: './.env' });
@@ -15,6 +17,7 @@ dotEnv.config({ path: './.env' });
 const app = express();
 
 const port = process.env.PORT || PORT;
+
 //Kết nối thành công
 const res = await connectDatabase();
 
@@ -39,9 +42,9 @@ app.use((req, res, next) => {
 
 app.use(errorHandler);
 
-
 app.use("/api", routerContact);
 app.use("/api", routerProduct);
+app.use("/api", routerCart);
 
 app.use ((error, req, res, next) => {
     const status = error.statusCode || 500;

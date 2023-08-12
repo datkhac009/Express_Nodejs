@@ -1,4 +1,4 @@
-import User from '../models/contactModel.js';
+import User from '../models/contact.js';
 import mongoose from "mongoose";
 import logger from "../utils/logger.js"
 import { MONGO_DATABASE, MONGO_URL } from "../utils/secrets.js";
