@@ -7,7 +7,7 @@ import {
     getContact,
     updateContact,
     deleteContact,
-} from "../controller/contactController.js";
+} from "../controller/contact.js";
 
 
 router.route("/users").get(getContacts).post(createContact);

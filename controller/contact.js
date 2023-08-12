@@ -1,10 +1,12 @@
-import User from "../models/contactModel.js";
+import User from "../models/contact.js";
+import UserProfile from "../models/profile.js";
 import expressAsyncHandler from "express-async-handler";
 import { hashPassword } from "../utils/password.js";
+import profileModel from "../models/profile.js";
 
 const getContacts  = expressAsyncHandler(async (req, res, next) => {
-    const user = await User.find({});
-    console.log(user)
+    const user = await UserProfile.find({}).select('-password').lean();
+
     if (user.length === 0) {
         res.status(404);
         const error = new Error("User not found");
@@ -24,15 +26,55 @@ const createContact = expressAsyncHandler (async (req,res) => {
             res.status(400);
             throw new Error("Error create!");
         }
+
+        const newProfile = new profileModel({
+            fullname, 
+            avatar: '',
+            email,
+            address: '', 
+            phone,
+            products: {
+                cart: [],
+                vouchers: [],
+            }
+        });
+
+        await newProfile.save();
+
         const hashPass = await hashPassword(password);
         console.log('hashPassword: ', hashPass);
 
-        const user = await User.create({ fullname, password: hashPass, email, phone });
-        console.log('new user: ', user);
-        res.status(202).json(user);
+        console.log(3);
+
+        const user = await User.create({ 
+            fullname, 
+            password: hashPass, 
+            email, 
+            phone,
+            profile: newProfile._id,
+        });
+
+        await user.save();
+
+        const formattedUser = await User.findOne({ _id: user._id })
+            .populate('profile')
+            .select('-password')
+            .lean();
+        
+        const UserId = formattedUser.profile._id;
+        delete formattedUser.profile._id;
+        console.log('formattedUser: ', formattedUser);
+
+        return res.status(202)
+            .json({ id: UserId, ...formattedUser.profile });
+
     } catch (error) {
-        res.status(400);
-        throw new Error(error.message);
+        // throw new Error(error.message);
+        console.log(error.message);
+        return res.status(400).json({
+            status: 'fail',
+            message: error.message.replace(/\"/g, "")
+        });
     }
 });
 
@@ -41,7 +83,8 @@ const getContact = expressAsyncHandler (async (req,res) => {
     const id = req.params.id;
     console.log("🚀 ~ file: contactController.js:42 ~ getContact ~ id:", id)
     
-    const user = await User.findById(id);
+    const user = await User.findById(id).select('-password').lean();
+    console.log('user: ', user);
     if (!user) {
         res.status(404).json({ error: 'User not found' });
     } else {
