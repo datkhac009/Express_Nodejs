@@ -23,6 +23,11 @@ const contactSchema = mongoose.Schema({
         required:[true, "Please add the contact phone"],
         unique: true
     },
+    profile: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "profile",
+        required: true
+    },
 }, {
     timestamps:true
 });
