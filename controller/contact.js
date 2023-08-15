@@ -64,13 +64,13 @@ const createContact = expressAsyncHandler (async (req,res) => {
             .populate({ path: 'profile', strictPopulate: false })
             .select('-password')
             .lean();
-
-        const UserId = formattedUser.profile._id;
-        delete formattedUser.profile._id;
         
-        console.log('formattedUser: ', formattedUser.profile);
+        const UserId = formattedUser._id;
+        delete formattedUser._id;
+        
+        console.log('formattedUser: ', formattedUser);
         return res.status(202)
-            .json({ id: UserId, ...formattedUser.profile });
+            .json({ id: UserId, ...formattedUser });
 
     } catch (error) {
         // throw new Error(error.message);
@@ -88,11 +88,6 @@ const getContact = expressAsyncHandler (async (req,res) => {
     console.log("🚀 ~ file: contactController.js:42 ~ getContact ~ id:", id)
     
     const user = await User.findById(id).select('-password').lean();
-
-    const findReferenceProfile = await User.findById(id).populate({ path: 'profile', strictPopulate: false }).lean();
-    console.log('findReferenceProfile: ', findReferenceProfile.profile);
-
-
     console.log('user: ', user);
     if (!user) {
         res.status(404).json({ error: 'User not found' });

@@ -9,6 +9,7 @@ export const addProductToCart = expressAsyncHandler(async (req, res) => {
     try {
 
         // TODO: get current user from database
+        //lean() là lấy chính xác dữ liệu
         const user = await UserProfile.findById(userId).lean();
 
         if (!user) {
@@ -26,11 +27,9 @@ export const addProductToCart = expressAsyncHandler(async (req, res) => {
 
         // TODO: get info from product
         const { productName, productPrice, productImage, productCategory } = product;
-        
-        // ? User is from the last findUserById
-        // ? if have user, add product to cart
-
-        // TODO: add product to user cart
+    
+        // TODO: add product to that user cart
+        console.log('user: ', user);
         user?.products?.cart.push({
             productId,
             productName,
@@ -40,7 +39,7 @@ export const addProductToCart = expressAsyncHandler(async (req, res) => {
             quantity
         });
 
-        return res.status(200).json(user);
+        res.status(200).json(user);
     } catch (error) {
         res.status(400);
         throw new Error(error.message);
