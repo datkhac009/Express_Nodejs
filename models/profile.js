@@ -19,7 +19,7 @@ const profile = mongoose.Schema({
         required:[false, "Please add the contact address"]
     },
     phone: {
-        type: Number,
+        type: String,
         required:[true, "Please add the contact phone"],
         unique: true
     },
