@@ -27,8 +27,10 @@ export const addProductToCart = expressAsyncHandler(async (req, res) => {
         // TODO: get info from product
         const { productName, productPrice, productImage, productCategory } = product;
         
-        // TODO: add product to that user cart
-        console.log('user: ', user);
+        // ? User is from the last findUserById
+        // ? if have user, add product to cart
+
+        // TODO: add product to user cart
         user?.products?.cart.push({
             productId,
             productName,
@@ -38,7 +40,7 @@ export const addProductToCart = expressAsyncHandler(async (req, res) => {
             quantity
         });
 
-        res.status(200).json(user);
+        return res.status(200).json(user);
     } catch (error) {
         res.status(400);
         throw new Error(error.message);
