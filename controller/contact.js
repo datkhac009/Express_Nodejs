@@ -56,17 +56,21 @@ const createContact = expressAsyncHandler (async (req,res) => {
 
         await user.save();
 
+        // const formattedUser = await User.findOne({ _id: user._id })
+        //     .populate('profile')
+        //     .select('-password')
+        //     .lean();
         const formattedUser = await User.findOne({ _id: user._id })
-            .populate('profile')
+            .populate({ path: 'profile', strictPopulate: false })
             .select('-password')
             .lean();
         
-        const UserId = formattedUser.profile._id;
-        delete formattedUser.profile._id;
+        const UserId = formattedUser._id;
+        delete formattedUser._id;
+        
         console.log('formattedUser: ', formattedUser);
-
         return res.status(202)
-            .json({ id: UserId, ...formattedUser.profile });
+            .json({ id: UserId, ...formattedUser });
 
     } catch (error) {
         // throw new Error(error.message);
