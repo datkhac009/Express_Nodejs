@@ -26,7 +26,6 @@ const createContact = expressAsyncHandler (async (req,res) => {
             res.status(400);
             throw new Error("Error create!");
         }
-
         const newProfile = new profileModel({
             fullname, 
             avatar: '',
@@ -38,12 +37,10 @@ const createContact = expressAsyncHandler (async (req,res) => {
                 vouchers: [],
             }
         });
-
         await newProfile.save();
 
         const hashPass = await hashPassword(password);
         console.log('hashPassword: ', hashPass);
-
         console.log(3);
 
         const user = await User.create({ 
@@ -55,11 +52,7 @@ const createContact = expressAsyncHandler (async (req,res) => {
         });
 
         await user.save();
-
-        // const formattedUser = await User.findOne({ _id: user._id })
-        //     .populate('profile')
-        //     .select('-password')
-        //     .lean();
+        
         const formattedUser = await User.findOne({ _id: user._id })
             .populate({ path: 'profile', strictPopulate: false })
             .select('-password')
@@ -71,7 +64,6 @@ const createContact = expressAsyncHandler (async (req,res) => {
         console.log('formattedUser: ', formattedUser);
         return res.status(202)
             .json({ id: UserId, ...formattedUser });
-
     } catch (error) {
         // throw new Error(error.message);
         console.log(error.message);

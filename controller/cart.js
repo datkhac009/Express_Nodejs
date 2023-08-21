@@ -9,7 +9,8 @@ export const addProductToCart = expressAsyncHandler(async (req, res) => {
     try {
 
         // TODO: get current user from database
-        //lean() là lấy chính xác dữ liệu
+        //lean() là lấy chính xác dữ liệu hiện tại
+        //Lấy ID của profile trong database
         const user = await UserProfile.findById(userId).lean();
 
         if (!user) {
@@ -18,6 +19,7 @@ export const addProductToCart = expressAsyncHandler(async (req, res) => {
         }
 
         // TODO: get product from database
+        //Lấy ID của products trong database
         const product = await Products.findById(productId);
 
         if (!product) {
@@ -26,10 +28,15 @@ export const addProductToCart = expressAsyncHandler(async (req, res) => {
         }
 
         // TODO: get info from product
+        //Lấy dữ liệu của product vừa mới thêm được
         const { productName, productPrice, productImage, productCategory } = product;
     
         // TODO: add product to that user cart
         console.log('user: ', user);
+        //? là regex
+        //gọi đến user.products.cart push  
+        //kiểm tra xem user.products.cart có tồn tại hay không
+        //sử dụng phương thức push() để thêm sản phẩm mới vào giỏ hàng của người dùng
         user?.products?.cart.push({
             productId,
             productName,
@@ -39,7 +46,7 @@ export const addProductToCart = expressAsyncHandler(async (req, res) => {
             quantity
         });
 
-        res.status(200).json(user);
+        return res.status(200).json(user);
     } catch (error) {
         res.status(400);
         throw new Error(error.message);

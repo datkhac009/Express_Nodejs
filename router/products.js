@@ -3,10 +3,10 @@ import { addProduct, allProducts, deleteProduct, updateProduct } from '../contro
 
 const router = express.Router();
 
+router.get('/product/all', allProducts);
 router.post('/product/add', addProduct);
-router.post('/product/update/:id', updateProduct);
+router.put('/product/update/:id', updateProduct);
 router.delete('/product/delete/:id', deleteProduct);
 
-router.get('/product/all', allProducts);
 
 export default router
