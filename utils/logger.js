@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import winston from 'winston';
 import dotenv from 'dotenv';
 
@@ -46,7 +47,7 @@ const transports = [
         filename: 'logs/combined.log'
     })
 ];
-
+    
 const logger = winston.createLogger({
     levels,
     level: 'info',
@@ -61,6 +62,6 @@ if (process.env.NODE_ENV !== 'production') {
             winston.format.simple()
         ),
     }));
-};
+}
 
 export default logger;

@@ -7,7 +7,7 @@ import dotEnv from 'dotenv';
 import routerContact from './router/contact.js';
 import routerProduct from './router/products.js';
 import routerCart from './router/cart.js';
-import errorHandler from './middleware/errorHandler.js';
+// import errorHandler from './middleware/errorHandler.js';
 
 
 

@@ -1,11 +1,12 @@
+/* eslint-disable no-useless-escape */
 import User from "../models/contact.js";
-import UserProfile from "../models/profile.js";
+// import UserProfile from "../models/profile.js";
 import expressAsyncHandler from "express-async-handler";
 import { hashPassword } from "../utils/password.js";
 import profileModel from "../models/profile.js";
 
 const getContacts  = expressAsyncHandler(async (req, res, next) => {
-    const user = await UserProfile.find({}).select('-password').lean();
+    const user = await User.find({}).select('-password').lean();//( Ví dụ khi find({}).select(“-password”) về thì nó sẽ find ra hết data User trừ password)
 
     if (user.length === 0) {
         res.status(404);
@@ -19,13 +20,15 @@ const getContacts  = expressAsyncHandler(async (req, res, next) => {
 
 
 const createContact = expressAsyncHandler (async (req,res) => {
-    const { fullname, password, email, phone } = req.body;
-
+    const { fullname, password, email, phone } = req.body;//lấy fullname, password, email, phone bên phía client
+    
     try {
+        //validate xem có fullname, password, email, phone hay không
         if (!fullname || !password || !email || !phone) {
             res.status(400);
             throw new Error("Error create!");
         }
+        //Tạo mới 1 đối tượng trong bảng profileModel (là bảng profile trong database) 
         const newProfile = new profileModel({
             fullname, 
             avatar: '',
@@ -37,33 +40,38 @@ const createContact = expressAsyncHandler (async (req,res) => {
                 vouchers: [],
             }
         });
-        await newProfile.save();
+        await newProfile.save();//sau khi tạo mới xong thì sẽ lưu vào bảng profile 
 
-        const hashPass = await hashPassword(password);
+        const hashPass = await hashPassword(password);//Mã hóa pass giúp tăng bảo mật của người dùng
         console.log('hashPassword: ', hashPass);
-        console.log(3);
 
+        //Tạo mới 1 đối tượng trong bảng contactModel (là bảng user trong database) 
         const user = await User.create({ 
             fullname, 
             password: hashPass, 
             email, 
             phone,
-            profile: newProfile._id,
+            profile: newProfile._id,//id của profile vủa mới tạo ở trên
         });
 
-        await user.save();
+        await user.save();//sau khi tạo mới xong thì sẽ lưu vào bảng user
         
-        const formattedUser = await User.findOne({ _id: user._id })
-            .populate({ path: 'profile', strictPopulate: false })
+        const formattedUser = await User.findOne({ _id: user._id })//Lấy id của user bằng cách dùng finOne()
+            .populate({ path: 'profile', strictPopulate: false })//vì trong user có ref của bảng profile trong DB nên có thể lấy dữ liệu của bảng profile trong DB bằng cách dùng populate() muốn path đến bảng profile để lấy dữ liệu thì phải tắt bảo mật bằng cách dùng strictPopulate: false 
             .select('-password')
-            .lean();
+            .lean();//lean()giúp tìm và đọc nhanh hơn
         
         const UserId = formattedUser._id;
+        const ProfileID = formattedUser.profile._id
+        const newID = {UserId,ProfileID}
         delete formattedUser._id;
+        delete formattedUser.profile._id;
         
         console.log('formattedUser: ', formattedUser);
-        return res.status(202)
-            .json({ id: UserId, ...formattedUser });
+        return res.status(202).json({ id: newID , ...formattedUser });
+        //return res.status(202).json(formattedUser);
+            
+        
     } catch (error) {
         // throw new Error(error.message);
         console.log(error.message);

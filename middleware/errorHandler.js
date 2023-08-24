@@ -1,3 +1,4 @@
+/* eslint-disable no-fallthrough */
 
 import constants from "../constants.js"
 
@@ -30,12 +31,13 @@ const errorHandler = (err, req, res, next) => {
                 title: "Validation NOT_FOUND",
                 message: err.message,
                 stackTrace: err.stack
+                
             })
         default:
             console.log("No Error,All good!");
             break;
     }
-
+    next()
 }
 
 export default errorHandler;

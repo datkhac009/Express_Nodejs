@@ -16,12 +16,12 @@ const contactSchema = mongoose.Schema({
     email: {
         type: String,
         required:[true, "Please add the contact email"],//được đánh dấu là bắt buộc và không được để trống
-        unique: true//unique là được đánh dấu là duy nhất(duy nhất 1 email)
+        unique: true//Tự động duyệt
     },
     phone: {
         type: String,
         required:[true, "Please add the contact phone"],//được đánh dấu là bắt buộc và không được để trống
-        unique: true//unique là được đánh dấu là duy nhất(duy nhất 1 phone)
+        unique: true//Tự động duyệt
     },
     profile: {
         type: mongoose.Schema.Types.ObjectId,

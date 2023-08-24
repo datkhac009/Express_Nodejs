@@ -1,4 +1,4 @@
-import mongoose, { mongo } from "mongoose";
+import mongoose from "mongoose";
 
 const products = mongoose.Schema({
     productId: {
@@ -24,7 +24,7 @@ const products = mongoose.Schema({
     productQuantity: {
         type: Number,
         required: true,
-        default: 0
+        default: 0//default là mặc định
     },
     productCategory: {
         type: String,

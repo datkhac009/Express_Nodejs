@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-escape */
 import expressAsyncHandler from "express-async-handler";
 import productsModel from "../models/products.js";
 import { v4 as uuidv4 } from 'uuid';
