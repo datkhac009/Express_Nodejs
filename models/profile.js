@@ -24,14 +24,14 @@ const profile = mongoose.Schema({
         unique: true
     },
     products:  {
-        cart: [{
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "cart"
-        }],
-        vouchers: [{
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "voucher"
-        }]
+        cart: {
+            type: Array,
+            default:[]
+        },
+        vouchers: {
+            type: Array,
+            default:[]
+        }
     }
 }, {
     timestamps:true

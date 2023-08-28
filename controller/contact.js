@@ -1,6 +1,6 @@
 /* eslint-disable no-useless-escape */
 import User from "../models/contact.js";
-// import UserProfile from "../models/profile.js";
+import UserProfile from "../models/profile.js";
 import expressAsyncHandler from "express-async-handler";
 import { hashPassword } from "../utils/password.js";
 import profileModel from "../models/profile.js";
@@ -87,7 +87,7 @@ const getContact = expressAsyncHandler (async (req,res) => {
     const id = req.params.id;
     console.log("🚀 ~ file: contactController.js:42 ~ getContact ~ id:", id)
     
-    const user = await User.findById(id).select('-password').lean();
+    const user = await UserProfile.findById(id).lean();
     console.log('user: ', user);
     if (!user) {
         res.status(404).json({ error: 'User not found' });
