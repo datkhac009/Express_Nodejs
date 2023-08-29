@@ -34,7 +34,6 @@ export const addProductToCart = expressAsyncHandler(async (req, res) => {
         //kiểm tra xem user.products.cart có tồn tại hay không
         //sử dụng phương thức push() để thêm sản phẩm mới vào giỏ hàng của người dùng
         
-        
         user.products.cart.push({
             productId,
             productName,
@@ -43,9 +42,6 @@ export const addProductToCart = expressAsyncHandler(async (req, res) => {
             productCategory,
             quantity
         });
-
-
-
         //Lấy array giỏ hàng của ng dùng hiện tại
         const updatedUserCart = user.products.cart;
         //Tìm id của ng dùng hiện tại và update giỏ hàng thành 1 giỏ hàng mới 

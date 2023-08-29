@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-useless-escape */
 import User from "../models/contact.js";
 import UserProfile from "../models/profile.js";
@@ -88,6 +89,7 @@ const getContact = expressAsyncHandler (async (req,res) => {
     console.log("🚀 ~ file: contactController.js:42 ~ getContact ~ id:", id)
     
     const user = await UserProfile.findById(id).lean();
+
     console.log('user: ', user);
     if (!user) {
         res.status(404).json({ error: 'User not found' });
@@ -118,9 +120,13 @@ const updateContact = expressAsyncHandler (async (req,res) => {
 const deleteContact = expressAsyncHandler(async (req,res) => {
     const id = req.params.id;
     const user = await User.findByIdAndDelete(id);
-    console.log('user: ', user);
-
-    res.status(201).json({message:`Delete user: ${user.fullname} by ID ${req.params.id}}`});
+    if(!user){
+        return res.status(404).json({message:'Không có user'})
+    }
+    const idProfile = user.profile._id; 
+    const profile = await profileModel.findByIdAndDelete(idProfile)
+    res.status(201).json(
+        {message:`Delete user: ${user.fullname} by ID user ${req.params.id} and ID profile ${idProfile}`});
 });
 
 export {
